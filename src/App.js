@@ -9,8 +9,10 @@ function App() {
   const [input, setInput] = useState({
     title: "",
     doeDate: "",
-    completed: null,
+    completed: false,
   });
+
+  const [err, setErr] = useState('')
 
   const onInputChange = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -26,17 +28,31 @@ function App() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    context.addTodoToList(input);
+    if( (input.title === '') ) {
+      setErr('Filed title not Empty!')
+      return false
+    }
+    if( (input.doeDate === '') ) {
+      setErr('Filed date not empty!')
+      return false
+    }
+    else {
+      setErr('')
+      context.addTodoToList(input);
+      setInput({title:'', doeDate:'', completed:false})
+    }
+   
   };
 
   return (
     <div className="App">
       <h1>Add a new Todo</h1>
+      {err}
       <form onSubmit={onSubmit}>
-        Title: <input type="text" name="title" onChange={onInputChange} />
-        Due Date: <input type="date" name="doeDate" onChange={onInputChange} />
+        Title: <input type="text" name="title" onChange={onInputChange}  value={input.title}/>
+        Due Date: <input type="date" name="doeDate" onChange={onInputChange} value={input.doeDate} />
         Completed:{" "}
-        <input type="checkbox" name="completed" onChange={handleCheckox} />
+        <input type="checkbox" name="completed" checked={input.completed} onChange={handleCheckox}/>
         <input type="submit" value="add" />
       </form>
       <TodoTable />
